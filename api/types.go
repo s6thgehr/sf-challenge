@@ -101,3 +101,12 @@ type BeaconHeadResponse struct {
 		} `json:"header"`
 	} `json:"data"`
 }
+
+type SyncCommitteeResponse struct {
+	ExecutionOptimistic bool `json:"execution_optimistic"`
+	Finalized           bool `json:"finalized"`
+	Data                struct {
+		Validators          []string   `json:"validators"`
+		ValidatorAggregates [][]string `json:"validator_aggregates"`
+	} `json:"data"`
+}

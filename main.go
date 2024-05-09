@@ -19,6 +19,7 @@ func main() {
 
 	r := gin.Default()
 	r.GET("/blockreward/:slot", handlers.BlockRewardHandler(client, rpc))
+	r.GET("/syncduties/:slot", handlers.SyncDutiesHandler(client, rpc))
 
 	r.Run(":8080")
 }

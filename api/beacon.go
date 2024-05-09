@@ -34,6 +34,10 @@ func FetchCurrentSlot(rpc string) (*int, error) {
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed to fetch beacon block: %d", resp.StatusCode)
+	}
+
 	var body BeaconHeadResponse
 	err = json.NewDecoder(resp.Body).Decode(&body)
 	if err != nil {
@@ -46,4 +50,25 @@ func FetchCurrentSlot(rpc string) (*int, error) {
 	}
 
 	return &slot, nil
+}
+
+func FetchSyncCommittee(rpc string, slot int) ([]string, error) {
+	url := fmt.Sprintf("%seth/v1/beacon/states/%d/sync_committees", rpc, slot)
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch sync committee: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed to fetch sync committee: %d", resp.StatusCode)
+	}
+
+	var body SyncCommitteeResponse
+	err = json.NewDecoder(resp.Body).Decode(&body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to decode response body: %v", err)
+	}
+
+	return body.Data.Validators, nil
 }
