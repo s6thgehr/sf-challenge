@@ -19,8 +19,13 @@ func SyncDutiesHandler(client *ethclient.Client, rpc string) gin.HandlerFunc {
 
 		syncCommittee, err := api.FetchSyncCommittee(rpc, slot)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"message": "internal server error"})
-			return
+			if err.Error() == "400" {
+				c.JSON(http.StatusBadRequest, gin.H{"message": "requested slot is too far in the future to have duties available"})
+				return
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "internal server error"})
+				return
+			}
 		}
 
 		var channel = make(chan string, 512)

@@ -57,7 +57,19 @@ func FetchCurrentSlot(rpc string) (*int, error) {
 }
 
 func FetchSyncCommittee(rpc string, slot int) ([]string, error) {
-	url := fmt.Sprintf("%seth/v1/beacon/states/%d/sync_committees", rpc, slot)
+	currentSlot, err := FetchCurrentSlot(rpc)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch current slot: %v", err)
+	}
+
+	var url string
+
+	if *currentSlot < slot {
+		url = fmt.Sprintf("%seth/v1/beacon/states/head/sync_committees?epoch=%d", rpc, slot/32)
+	} else {
+		url = fmt.Sprintf("%seth/v1/beacon/states/%d/sync_committees", rpc, slot)
+	}
+
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch sync committee: %v", err)
@@ -65,7 +77,7 @@ func FetchSyncCommittee(rpc string, slot int) ([]string, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("failed to fetch sync committee: %d", resp.StatusCode)
+		return nil, fmt.Errorf("%d", resp.StatusCode)
 	}
 
 	var body SyncCommitteeResponse
