@@ -17,6 +17,6 @@ func NewEthereumClient(rpc string) (*ethclient.Client, error) {
 	return client, nil
 }
 
-func FetchBlockByNumber(client *ethclient.Client, number int64) (*types.Block, error) {
-	return client.BlockByNumber(context.Background(), big.NewInt(number))
+func FetchBlockByNumber(client *ethclient.Client, number int) (*types.Block, error) {
+	return client.BlockByNumber(context.Background(), big.NewInt(int64(number)))
 }

@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func FetchBeaconBlock(rpc string, slot int) (*GetBlockV2Response, error) {
+func FetchBeaconBlockBySlot(rpc string, slot int) (*GetBlockV2Response, error) {
 	url := fmt.Sprintf("%seth/v2/beacon/blocks/%d", rpc, slot)
 	resp, err := http.Get(url)
 	if err != nil {
