@@ -23,6 +23,15 @@ func SyncDutiesHandler(client *ethclient.Client, rpc string) gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{"sync_committee": syncCommittee})
+		var channel = make(chan string, 512)
+		var syncCommitteeAddresses []string
+
+		go api.ConvertValidatorIndexToPubkey(rpc, syncCommittee, slot, channel)
+		for address := range channel {
+			syncCommitteeAddresses = append(syncCommitteeAddresses, address)
+		}
+
+		c.JSON(http.StatusOK, gin.H{"sync_committee": syncCommitteeAddresses})
+
 	}
 }
