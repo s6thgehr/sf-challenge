@@ -35,7 +35,7 @@ Validators in a sync committee are fixed for about 27 hours. That's why it is po
 ### Frameworks
 
 #### github.com/ethereum/go-ethereum/ethclient
-Go-ethereum is used to connect to a execution node.
+Go-ethereum is used to connect to an execution node.
 
 #### github.com/gin-gonic/gin
 Gin is used to build the endpoints
